@@ -68,4 +68,39 @@ Dimension tables attributes play a vital role in the Dw/BI system. Because they 
 
 The first thing to notice about the dimensional schema is its simplicity and symmetry. The simplicity of the dimensional model has performance benefits. Database optimizers process these simple schemas with fewer joins more efficiently. Dimension models are gracefully extensible to accommodate change. The predictable framework of a dimensional model withstands unexpected changes in user behavior. Another way to think about the relationship between a dimension and a fact is to think in terms of a report, dimension attributes supply the report filters and labeling, whereas the fact tables supply the report's numeric values: 
 
-![Diagram 3]()
+![Diagram 3](https://raw.githubusercontent.com/Jzbonner/DataEngineering/gh-pages/DataWarehouseToolkit/img-media/DWT%20Ch.%201%20Diagram%203.png)
+
+You can think about the SQL required to create the illustrated report from above as: 
+```SQL
+SELECT 
+    store.district_name,
+    product.brand,
+    sum(sales_facts.sales_dollars) AS "Sales Dollars" 
+
+FROM 
+    store, 
+    product, 
+    date, 
+    sales_facts
+
+WHERE 
+    date.month_name = "January" AND 
+    date.year = 2013 AND 
+    store.store_key = sales_facts.store_key AND 
+    product.product_key = sales_facts.product_key AND 
+    data.date_key = sales_facts.date_key 
+
+GROUP BY 
+    store.district_name, 
+    product.brand 
+```
+
+### Kimball's DW/BI Architecture 
+As illustrated in the figure below there are four separate and distinct components to consider in the DW/BI environment : operational source systems, ETL system, data presentation area, and business intelligence applications. 
+
+![Diagram 4]()
+
+#### Operational Source Systems 
+Think of the source systems as outside the data warehouse because presumable you have little or not control over the content and format of the data in these operational systems. The main priorities of the source system are processing performance and availability. Source systems contain little historical data, a good data warehouse can relieve the source systems of much of the responsibility of being responsible for the past. In may cases the source systems are special purpose applications without any commitment to sharing common data (i.e. product, customer, geography, etc.) 
+
+#### Extract, Transformation and Load Systems
