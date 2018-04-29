@@ -98,9 +98,55 @@ GROUP BY
 ### Kimball's DW/BI Architecture 
 As illustrated in the figure below there are four separate and distinct components to consider in the DW/BI environment : operational source systems, ETL system, data presentation area, and business intelligence applications. 
 
-![Diagram 4]()
+![Diagram 4](https://raw.githubusercontent.com/Jzbonner/DataEngineering/gh-pages/DataWarehouseToolkit/img-media/DWT%20Ch.1%20Diagram%204.png)
 
 #### Operational Source Systems 
 Think of the source systems as outside the data warehouse because presumable you have little or not control over the content and format of the data in these operational systems. The main priorities of the source system are processing performance and availability. Source systems contain little historical data, a good data warehouse can relieve the source systems of much of the responsibility of being responsible for the past. In may cases the source systems are special purpose applications without any commitment to sharing common data (i.e. product, customer, geography, etc.) 
 
 #### Extract, Transformation and Load Systems
+The Extract, Transformation and Load Systems of the DW/BI environment consist of a work area, instantiated data structures and a set of processes. The ETL system is everything between operational source systems and the DW/BI presentation area. 
+* Extraction is the first step in the process of getting data into the data warehouse environment (_Extracting_ means reading and understanding the source data and copying the data needed into ETL system for further manipulation)
+* Then there are numerous potential transformations such as cleansing the data, combining data from multiple sources, and de-duplicating data 
+    * In addition these activities can be architected to create diagnostic metadata, eventually leading to business process re-engineering to improve data quality in the source systems over time 
+* The final step of the ETL process is the physical structuring and loading of data into the presentation area's target dimensional model
+
+Many of these defined subsystems focus on dimension table processing such as surrogate key assignments, code lookups to provide appropriate descriptions, splitting or combining columns to present the appropriate data values or joining underlying third normal form table structures into flattened denormalized dimensions. 
+
+#### Presentation Area to Support Business Intelligence 
+The _DW/BI presentation area_ is where data is organized, stored and made available for direct querying by users, report writers, and other analytical BI applications. Ideas to consider for the presentation area: 
+
+> Insist that the data be presented, stored, and accessed in dimensional schemas; for dimensional modeling is the most viable technique for delivering data to the DW/BI users. The second stake is that it must contain detailed, atomic data. Atomic data is required to withstand assaults from unpredictable ad hoc user queries. The most finely grained data should be available in the presentation area so that users can ask the most precise questions possible. The presentation data are should be built around business process measurement events. All the dimensional structures must be built using common, conformed dimensions (i.e. they must conform to the adherence of the _Enterprise Data Warehouse Bus Architecture_).
+
+(_Data Warehouse Toolkit_, Ch. 1)
+
+Using the bus architecture is the key to building distributed DW/BI systems. When the bus architecture is used as a framework, you can develop the enterprise data warehouse in agile, decentralized, realistically scoped, iterative manner. 
+
+#### Business Intelligence Applications 
+The term Business Intelligence loosely refers to the range of capabilities provided to business users to leverage the presentation area for analytical decision making. A BI application can be as simple as an ad hoc query tool or as complex as a sophisticated data mining or modeling application. 
+
+### Alternative DW/BI Architectures 
+> We strongly believe that rather than encouraging more consternation over our philosophical differences, the industry would be far better off devoting energy to ensure that our DW/BI deliverables are broadly accepted by the business to make better, more informed decisions. The architecture should merely be a means to this objective. 
+
+(_Data Warehouse Toolkit_, Ch. 1)
+
+#### Independent Data Mart Architecture 
+![Diagram 5](https://raw.githubusercontent.com/Jzbonner/DataEngineering/gh-pages/DataWarehouseToolkit/img-media/DWT%20Ch.%201%20Diagram%205.png)
+
+~ Addendum: Include a brief description of similarities and differences fom pages 26 - 30.
+
+#### Hub-and-Spoke CCorporate Information Factory Inmon Architecture 
+![Diagram 6](https://raw.githubusercontent.com/Jzbonner/DataEngineering/gh-pages/DataWarehouseToolkit/img-media/DWT%20Ch.%201%20Diagram%206.png)
+
+~ Addendum: Include a brief description of similarities and differences fom pages 26 - 30.
+
+#### Hybrid Hub-and-Spoke and Kimball Architecture 
+![Diagram 7](https://raw.githubusercontent.com/Jzbonner/DataEngineering/gh-pages/DataWarehouseToolkit/img-media/DWT%20Ch.%201%20Diagram%207.png)
+
+~ Addendum: Include a brief description of similarities and differences fom pages 26 - 30.
+
+### Dimensional Modeling Myths 
+* Myth 1: Dimensional Models are Only for Summary data 
+* Myth 2 : Dimensional Models are Departmental, Not Enterprise 
+* Myth 3: Dimensional Models are Not Scalable
+* Myth 4: Dimensional Models are Only for Predictable Usage 
+* Myth 5: Dimensional Models Can't Be Integrated 
