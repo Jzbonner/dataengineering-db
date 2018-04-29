@@ -64,4 +64,8 @@ Dimension tables attributes play a vital role in the Dw/BI system. Because they 
 * Dimension tables are highly denormalized with flattened many-to-one relationships within a single dimension table 
 
 #### Facts and Dimensions Joined in a Star Schema 
-![Diagram 2]()
+![Diagram 2](https://raw.githubusercontent.com/Jzbonner/DataEngineering/gh-pages/DataWarehouseToolkit/img-media/DWT%20Ch.%201%20Diagram%202.png)
+
+The first thing to notice about the dimensional schema is its simplicity and symmetry. The simplicity of the dimensional model has performance benefits. Database optimizers process these simple schemas with fewer joins more efficiently. Dimension models are gracefully extensible to accommodate change. The predictable framework of a dimensional model withstands unexpected changes in user behavior. Another way to think about the relationship between a dimension and a fact is to think in terms of a report, dimension attributes supply the report filters and labeling, whereas the fact tables supply the report's numeric values: 
+
+![Diagram 3]()
