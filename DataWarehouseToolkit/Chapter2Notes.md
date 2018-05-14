@@ -7,3 +7,7 @@ The Data Warehouse Toolkit Third Edition: The Definitive Guide to Dimensional Mo
 ### Fundamental Concepts 
 
 #### Gather Business Requirements and Data Realities 
+In dimensional modeling the development team needs to understand the needs of the business, as well as the realities of the underlying source data. References for review of this concept: 
+* Chapter 1 (pg. 5), Chapter 3 (pg. 70), Chapter 11 (pg. 297), Chapter 17 (pg. 412), Chapter 18 (pg. 431), Chapter 19 (pg. 444)
+
+#### Collaborative Dimensional Modeling Workshops 
