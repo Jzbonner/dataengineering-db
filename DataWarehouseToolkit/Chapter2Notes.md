@@ -83,3 +83,4 @@ A row in an _accumulating snapshot fact table_ summarizes the measurement events
 * Chapter 4 (pg. 118), Chapter 5 (pg. 147), Chapter 6 (pg. 194), Chapter 13 (pg. 326), Chapter 14 (pg. 342), Chapter 16 (pg. 392), Chapter 19 (pg. 475)
 
 #### Factless Fact Tables 
+~ Refer to Notes on Github. 
