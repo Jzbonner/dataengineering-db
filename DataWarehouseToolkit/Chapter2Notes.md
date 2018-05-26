@@ -83,4 +83,96 @@ A row in an _accumulating snapshot fact table_ summarizes the measurement events
 * Chapter 4 (pg. 118), Chapter 5 (pg. 147), Chapter 6 (pg. 194), Chapter 13 (pg. 326), Chapter 14 (pg. 342), Chapter 16 (pg. 392), Chapter 19 (pg. 475)
 
 #### Factless Fact Tables 
+Although most measurement events capture numerical results, it is possible that the event merely records a set of dimensional entities coming together at a moment in time. _Factless Fact Tables_ can also be used to analyze what didn't happen. These queries always have two parts: a factless coverage table that contains all the possibilities of events that might happen and an activity table that contains the events that did happen. When the activity is subtracted from the coverage, the result is the set of events that did not happen. 
+* Chapter 3 (pg. 97), Chapter 6 (pg. 176), Chapter 13 (pg. 329), Chapter 16 (pg. 396)
+
+#### Aggregate Fact Tables and OLAP Cubes
+_Aggregate Fact Tables_ are simple numeric rollups of atomic fact table data built solely to accelerate query performance. These aggregate fact table should be available to the BI layer at the same time as the atomic fact table so that BI tool smoothly choose the appropriate aggregate level at query time. This process, known as _aggregate navigation_, must be open so that every report writer, query tool, and BI application harvests the same performance benefits. A properly designed set of aggregates should behave like database indexes, which accelerate query performance but are not encountered directly by the BI applications or business users. Aggregate fact tables contain foreign keys to shrunken conformed dimensions, as well as aggregated facts created by summing measures form more atomic fact tables. 
+* Chapter 15 (pg. 366), Chapter 19 (pg. 481), Chapter 20 (pg. 519)
+
+#### Consolidated Fact Tables 
+It is convenient to combine multiple fact tables together if they can be expressed at the same grain. These are known as _Consolidated Fact Tables_. Consolidated Fact Tables add burden to the ETL processing, but ease the analytic burden on the BI application. 
+* Chapter 7 (pg. 224), Chapter 16 (pg. 395)
+
+### Basic Dimension Table Techniques 
+
+#### Dimension Table Structure 
+Every dimension table has a single primary key column. This primary key is embedded as a foreign key in any associated fact table where the dimension row's descriptive context is exactly correct for that fact table row. Dimension tables are usually wide, flat, denormalized tables with many low-cardinality text attributes. Dimension table attributes are the primary target of constraints and grouping specifications from queries and BI applications. The descriptive labels on reports are typically dimension attribute domain values. 
+* Chapter 1 (pg. 13), Chapter 3 (pg. 79), Chapter 11 (pg. 301)
+
+#### Dimension Surrogate Keys 
+A dimension table is designed with one column serving as a unique primary key. This primary key cannot be the operational system's natural key because there will be multiple dimension rows for that natural key when changes are tracked over time. The DW/BI system needs to claim control of the primary keys of all dimensions; rather than using explicit natural keys or natural keys with appended dates, you should create anonymous integer primary keys for every dimension. These dimension surrogate keys are simple integers, assigned in sequence, starting with the value 1, every time a new key is needed.
+* chapter 3 (pg. 98), Chapter 19 (pg. 469), Chapter 20 (pg. 506)
+
+#### Natural, Durable and Supernatural Keys 
+Natural keys created by operational source systems are subject to business rules outside the control of the DW/BI system. The best durable keys have a format that is independent of the original business process and thus should be simple integers assigned in sequence beginning with 1. 
+* Chapter 3 (pg. 100), Chapter 20 (pg. 510), Chapter 21 (pg. 539)
+
+#### Drilling Down 
+_Drilling Down_ is the most fundamental way data is analyzed by business users. It simply means adding a row header to an existing query; the new row header is a dimension attribute appended to the `GROUP BY` extension in an SQL query. 
+* Chapter 3 (pg. 86)
+
+#### Degenerate Dimensions 
+_Degenerate Dimensions_ are most common with transaction and accumulating snapshot fact tables. Degenerate dimensions are dimensions that are defined but have no content except for its primary key.  
+* Chapter 3 (pg. 93), Chapter 6 (pg. 178), Chapter 11 (pg. 303), Chapter 16 (pg. 383)
+
+#### Denormalized Flattened Dimensions 
+In general, dimensional designers must resist the normalization urges caused by years of operational database designs and instead denormalize the many-to-one fixed depth hierarchies into separate attributes on a flattened dimension row. 
+* Chapter 1 (pg. 13), Chapter 3 (pg. 84)
+
+#### Multiple Hierarchies in Dimensions 
+Many dimensions may contain more than one natural hierarchy. The separate hierarchies can gracefully coexist in the same dimension table. 
+* Chapter 3 (pg. 88), Chapter 19 (pg. 470)
+
+#### Flags and Indicators as Textual Attributes 
+Operational codes with embedded meaning within the code value should be broken down with each part of the code expanded into its own separate descriptive dimension attribute. 
+* Chapter 3 (pg. 82), Chapter 11 (pg. 301), Chapter 16 (pg. 383)
+
+#### Null Attributes in Dimensions 
+Null-valued dimension attributes result when a given dimension row has not been fully populated, or when there are attributes that are not applicable to all the dimension's rows. Nulls in dimension attributes should be avoided because different databases handle grouping and constraining on nulls inconsistently. 
+* Chapter 3 (pg. 92)
+
+#### Calendar Date Dimensions 
+_Calendar Date Dimensions_ are attached to virtually every fact table to allow navigation of the fact table through familiar dates, months, fiscal periods, and special days on the calendar. The calendar date dimension typically has many attributes describing characteristics such as week number, month name, fiscal period, and national holiday indicator. If business users constrain or group on time-of-day attributes, such as day part grouping or shift number, then you would add a separate time-of-day dimension foreign key to the fact table. 
+
+#### Role-Playing Dimensions 
+A single physical dimension can be reference multiple times in a fact table, with each reference linking to a logically distinct role for the dimension. For instance, a fact table can have several dates, each of which is represented by a foreign key to the date dimension. These separate dimension views are called _roles_. 
+* Chapter 6 (pg. 170), Chapter 12 (pg. 312), Chapter 14 (pg. 345), Chapter 16 (pg. 380)
+
+#### Junk Dimensions 
+Transactional business processes typically produce a number of miscellaneous, low-cardinality flags and indicators. Rather than making separate dimensions for each flag and attribute, you can create a single junk dimension combining them together. 
+* Chapter 6 (pg. 179), Chapter 12 (pg. 318), Chapter 16 (pg. 392), Chapter 19 (pg. 470)
+
+#### Snowflaked Dimensions 
+When a hierarchical relationship in a dimension table is normalized, low-cardinality attributes appear as secondary tables connected to the base dimension table by an attribute key. When this process is repeated with all the dimension table's hierarchies, a characteristic multilevel structure is created that is called a _snowflake_. You should avoid snowflakes because it is difficult for business users to understand and navigate them. 
+* Chapter 3 (pg. 104), Chapter 11 (pg. 301), Chapter 20 (pg. 504)
+
+#### Outrigger Dimensions 
+A dimension can contain a reference to another dimension table. These secondary dimension references are called _outrigger dimensions_. Outrigger dimensions are permissible, but should be used sparingly. In most cases, the correlations between dimension should be demoted to a fact table, where both dimensions are represented as separate foreign keys. 
+* Chapter 3 (pg. 106), Chapter 5 (pg. 160), Chapter 8 (pg. 243), Chapter 12 (pg. 321)
+
+### Integration via Conformed Dimensions 
+One of the marquee successes of the dimensional modeling approach has been to define a simple but powerful recipe for integrating data from different business processes.  
+
+#### Conformed Dimensions 
+Dimension tables conform when attributes in separate dimension tables have the same column names and domain contents. Information from separate fact tables can be combined in a single report by using conformed dimension attributes that are associated with each fact table. When a conformed attribute is used as the row header, the results from the separate fact tables can be aligned on the same rows in a drill-across report. This is the essence of integration in an enterprise DW/BI system. _Conformed dimensions_, defined once in collaboration with the business's data governance representatives, are reused across fact tables; they deliver both analytical consistency and reduced future development costs because the wheel is not repeatedly re-created. 
+* Chapter 4 (pg. 130), Chapter 8 (pg. 256), Chapter 11 (pg. 304), Chapter 16 (pg. 386), Chapter 18 (pg. 431), Chapter 18 (pg. 461)
+
+#### Shrunken Dimensions 
+_Shrunken Dimensions_ are conformed dimensions that are a subset of rows and/or columns of a base dimension. These are required when constructing aggregate fact tables. They are also necessary for business processes that naturally capture data at a higher level of granularity, such as a forecast by month and brand. Another case of conformed dimension sub-setting occurs when two dimensions are at the same level of detail, but one represents only a subset of rows. 
+* Chapter 4 (pg. 132), Chapter 19 (pg. 472), Chapter 20 (pg. 504)
+
+#### Drilling-Across 
+_Drilling-Across_ simply means making separate queries against two or more fact tables where the row headers of each query consist of identical conformed attributes. The answer sets from the two queries are aligned by performing a sort-merge operation on the common dimension attribute row headers. 
+* Chapter 4 (pg. 130)
+
+#### Value Chain 
+A _value chain_ identifies the natural flow of an organization's primary business processes. Operational source systems typically produce transaction or snapshots at each step of the value chain. 
+* Chapter 4 (pg. 111), Chapter 7 (pg. 210), Chapter 16 (pg. 377)
+
+#### Enterprise Data Warehouse Bus Architecture
+The _Enterprise Data Warehouse Bus Architecture_ provides an incremental approach to building the enterprise DW/BI system. This architecture decomposes the DW/BI planning process into manageable pieces by focusing on business processes, while delivering integration via standardized conformed dimensions that are reused across processes. The bus architecture is technology and database platform independent; both relational and OLAP dimensional structures can participate. 
+* Chapter 1 (pg. 21), Chapter 4 (pg. 123)
+
+#### Enterprise Data Warehouse Bus Matrix 
 ~ Refer to Notes on Github. 
