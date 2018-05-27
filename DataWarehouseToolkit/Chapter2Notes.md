@@ -175,4 +175,52 @@ The _Enterprise Data Warehouse Bus Architecture_ provides an incremental approac
 * Chapter 1 (pg. 21), Chapter 4 (pg. 123)
 
 #### Enterprise Data Warehouse Bus Matrix 
-~ Refer to Notes on Github. 
+The _Enterprise Data Warehouse Bus Matrix_ is the essential tool for designing and communicating the enterprise data warehouse bus architecture. The rows of the matrix are business processes and the columns are dimensions. The shaded cells of the matrix indicate whether a dimension is associated with a given business process. Besides the technical design considerations, the bus matrix is used as input to prioritize the DW/BI projects with business management as teams should implement one row of the matrix at a time. 
+* Chapter 4 (pg. 125), Chapter 5 (pg. 143), Chapter 6 (pg. 168), Chapter 7 (pg. 202), Chapter 9 (pg. 268), Chapter 10 (pg. 282), Chapter 11 (pg. 297), Chapter 12 (pg. 311), Chapter 13 (pg. 325), Chapter 14 (pg. 339), Chapter 15 (pg. 368), Chapter 16 (pg. 389)
+
+#### Detailed Implementation Bus Matrix
+The _Detailed Implementation Bus Matrix_ is a more granular bus matrix where each business process row has been expanded to show specific fact tables or OLAP cubes. 
+* Chapter 5 (pg. 143), Chapter 16 (pg. 390)
+
+#### Opportunity/Stakeholder Matrix 
+The _Opportunity/Stakeholder Matrix_ helps identify which business groups should be invited to the collaborative design sessions for each process-centric row. 
+* Chapter 4 (pg. 127)
+
+### Dealing with Slowly Changing Dimension Attributes 
+It is quite common to have attributes in the same dimension table that are handled with different change tracking techniques. Below you will find fundamental approaches for dealing with slowly changing dimension (SCD) attributes. 
+
+#### Type 0: Retain Original  
+With _type 0_, the dimension attribute value never changes, so facts are always grouped by this original value. Type 0 is appropriate for any attribute labeled "original", such as a customer's original credit score ofr a durable identifiers. 
+* Chapter 5 (pg. 148)
+
+#### Type 1: Overwrite 
+With _type 1_, the old attribute value in the dimension row is overwritten with the new value; type 1 attributes always reflects the most recent assignment, and therefore this technique destroys history. Although this approach is easy to implement and does not create additional dimension rows. 
+* Chapter 5 (pg. 149), Chapter 16 (pg. 380), Chapter 19 (pg. 465)
+
+#### Type 2: Add New Row 
+_Type 2_ changes add a new row in the dimension with the updated attribute values. When a new row is created for a dimension member, a new primary surrogate key is assigned and used as a foreign key in all fact tables from the moment of the update until a subsequent change creates a new dimension key and updated dimension row. 
+* Chapter 5 (pg. 150), Chapter 8 (pg. 243), Chapter 9 (pg. 263), Chapter 16 (pg. 380), Chapter 19 (pg. 465), Chapter 20 (pg. 507)
+
+#### Type 3: Add New Attribute 
+_Type 3_ changes add a anew attribute in the dimension to preserve the old attribute value; the new value overwrite the main attribute as in a type 1 change. This kind of type 3 change is sometimes called an _alternative reality_. This slowly changing dimension technique is used relatively infrequently. 
+* Chapter 5 (pg. 154), Chapter 16 (pg. 380), Chapter 19 (pg. 467)
+
+#### Type 4: Add Mini-Dimension 
+This situation is sometimes called a _rapidly changing monster dimension_. The type 4 mini dimension requires its own unique primary key; the primary keys of both the base dimension and mini-dimension are captured in the associated fact tables. 
+* Chapter 5 (pg. 156), Chapter 10 (pg. 289), Chapter 16 (pg. 381), Chapter 19 (pg. 467)
+
+#### Type 5: Add Mini-Dimension and Type 1 Outrigger 
+The _Type 5_ technique is used to accurately preserve historical attribute values, plus report historical facts according to current attribute values. Type 5 builds on the type 4 mini-dimension by also embedding a current type 1 reference to the mini-dimension in the base dimension. The ETL team must overwrite this type 1 mini-dimension reference whenever the current mini-dimension assignment changes. 
+* Chapter 5 (pg. 160), Chapter 19 (pg. 468)
+
+#### Type 6: Add Type 1 Attributes to Type 2 Dimension 
+Like type 5, _Type 6_ also delivers both historical and current dimension attribute values. Type 6 builds on the the type 2 technique by also embedding current type 1 versions of the same attributes in the dimension row so that fact rows can be filtered or grounded by either the type 2 attribute value in effec when the measurement occurred or the attribute's current value. 
+* Chapter 5 (pg. 160), Chapter 19 (pg. 468)
+
+#### Type 7: Dual Type 1 and Type 2 Dimensions
+_Type 7_ is the final hybrid technique used to support both as-was and as-is reporting. A fact table can be accessed through a dimension modeled both as a type 1 dimension showing only the most current attribute values, or as a type 2 dimension showing correct contemporary historical profiles. The same dimension table enables both perspectives. Both the durable key and primary surrogate key of the dimension are placed in the fact table. 
+
+For the Type 1 perspective, the current flag in the dimension is constrained to be current and the fact table is joined via the durable key. For the Type 2 perspective, the current flag is not constrained, and the fact table is joined via the surrogate primary key. These two perspectives would be deployed as separate views to the BI applications. 
+* Chapter 5 (pg. 162), Chapter 19 (pg. 468)
+
+### Dealing with Dimension Hierarchies 
