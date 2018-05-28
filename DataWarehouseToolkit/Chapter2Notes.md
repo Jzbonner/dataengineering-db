@@ -224,3 +224,106 @@ For the Type 1 perspective, the current flag in the dimension is constrained to 
 * Chapter 5 (pg. 162), Chapter 19 (pg. 468)
 
 ### Dealing with Dimension Hierarchies 
+Dimensional hierarchies are commonplace. Below is information relating to these hierarchies and their principles: 
+
+#### Fixed Depth Positional Hierarchies 
+_A Fixed Depth Hierarchy_ is a series of many-to-one relationships, such as product to brand to category to department. When a fixed depth hierarchy is defined and the hierarchy levels have agreed upon names, the hierarchy levels should appear as separate positional attributes in a dimension table. 
+* Chapter 3 (pg. 84), Chapter 7 (pg. 214), Chapter 19 (pg. 470), Chapter 20 (pg. 501)
+
+#### Slightly/Ragged and Ragged Variable Depth Hierarchies with Hierarchy Bridge Tables/Pathstring Attributes
+_Slightly Ragged Hierarchies_ don't have a fixed number of levels, but the range in depth is small. Geographic hierarchies often range in depth from perhaps three level to six level. Rather than using complex machinery for unpredictably variable hierarchies, you can force-fit slightly ragged hierarchies into a fixed depth positional design with separate dimension attributes for the maximum number of levels, and then populate the attribute value based on rules from the business. 
+
+_Ragged Hierarchies_ of indeterminate depth are difficult to model and query in relational databases. With SQL extensions, alternative ragged hierarchies cannot be substituted at query time, shared ownership structures are not supported, and time varying ragged hierarchies are not supported. However, all these limitations can be overcome by modelling a ragged hierarchy with a specifically constructed _bridge table_. This bridge table contains a row for every possible path in the ragged hierarchy and enable all forms of hierarchy traversal to be accomplished with standard SQL rather than using special extension languages. 
+
+For each row in the dimension, the _Pathstring Attribute_ contains a specifically encoded text string containing the complete path description from the supreme node of a hierarchy down to the node described by the particular dimension row. The Pathstring approach does not enable rapid substitution of alternative hierarchies or shared ownership hierarchies, and can also be vulnerable to structure changes in the ragged hierarchy that could force the entire hierarchy to be relabeled. 
+* Chapter 7 (pg. 214), Chapter 7 (pg. 215), Chapter 7 (pg. 221), Chapter 9 (pg. 273)
+
+### Advanced Fact Table Techniques 
+The techniques in this section refer to less common fact table patterns: 
+
+#### Fact Table Surrogate Keys 
+Surrogate keys are used to implement the primary keys of almost all dimension tables. _Fact Table Surrogate Keys_, which are not associated with any dimension are assigned sequentially during the ETL load process and are used 1.) as the single column primary key of the fact table; 2.) to serve as an immediate identifier of a fact table row without navigating multiple dimensions for ETL purposes; 3.) to allow an interrupted load process to either back our or resume; 4.) to allow fact table update operations to be decomposed into less risky inserts plus deletes. 
+* Chapter 3 (pg. 102), Chapter 19 (pg. 486), Chapter 20 (pg. 520)
+
+#### Centipede Fact Tables 
+A _Centipede Fact Table_ is the separation of normalized dimensions at each level of a many-to-one hierarchy and then include the foreign keys in a single fact table. These should be avoided and all the many-to-one hierarchically related dimensions should be collapsed back to their unique lowest grains. 
+* Chapter 3 (pg. 108)
+
+#### Numeric Values as Attributes or Facts 
+Designers sometimes encounter numeric values that don't clearly fall into either the fact or dimension attribute categories. A classic example is a product's standard list price. If the numeric value is used primarily for calculation purposes it likely belongs in the fact table. If a stable numeric value is used predominately for filtering and grouping, it should be treated as a dimension attribute. 
+* Chapter 3 (pg. 85), Chapter 6 (pg. 188), Chapter 8 (pg. 254), Chapter 16 (pg. 382)
+
+#### Lag/Duration Facts 
+Business users often want to analyze the lags or durations between these milestones; sometimes these lags are just the differences between dates, but other times the lags are based on more complicated business rules. 
+* Chapter 6 (pg. 196), Chapter 16 (pg. 393)
+
+#### Header/Line Fact Tables 
+Operational transaction systems often consist of a transaction header row that's associated with multiple transaction lines. With header/line schema, all the header-level dimension foreign keys and degenerate dimensions should be included on the line-level fact table. 
+* Chapter 6 (pg. 181), Chapter 12 (pg. 315), Chapter 15 (pg. 363)
+
+#### Allocated Facts 
+You should strive to _allocate_ the header facts down to the line level based on rules provided by the business, so the allocated facts can be sliced and rolled up by all the dimensions. 
+* Chapter 6 (pg. 184)
+
+
+#### Profit and Loss Fact Tables Using Allocations, Multiple Currency Facts, Multiple Currency Facts, Multiple UNits of Measure Facts, Year-to-Date Facts
+Further detail on these topic can be found at the references listed below. 
+* Chapter 6 (pg. 182), Chapter 6 (pg. 189), Chapter 6 (pg. 197), Chapter 7 (pg. 206), Chapter 15 (pg. 370)
+
+#### Multipass SQL to Avoid Fact-to-Fact Table Joins 
+A BI application must never issue SQL that joins two fact tables together across the fact table's foreign keys. Instead the technique of drilling-across two fact tables should be used, where the answer sets from shipments and returns are separately created. 
+* Chapter 4 (pg. 130), Chapter 8 (pg. 259)
+
+#### Timespan Tracking in Fact Tables 
+There re three basic fact table grains: transaction, periodic snapshot and accumulating snapshot. 
+* Chapter 8 (pg. 252), Chapter 16 (pg. 394)
+
+#### Late Arriving Facts 
+A fact row is _late arriving_ if the most current dimensional context for new fact rows does not match the incoming row. This happens when the fact row is delayed. In this case the relevant dimensions must be searched to find the dimension keys that were effective when the late arriving measurement event occurred. 
+* Chapter 14 (pg. 351), Chapter 19 (pg. 478)
+
+### Advanced Dimension Techniques 
+The techniques in this section refer to more advanced dimension table patterns:
+
+#### Dimension-to-Dimension Table Joins 
+Dimensions can contain references to other dimensions. This means the correlation between the dimensions can be discovered only traversing the fact table, but this may be acceptable, especially if the fact table is a periodic snapshot where all the keys for all the dimensions are guaranteed to be present for each reporting period. 
+* Chapter 6 (pg. 175)
+
+#### Multivalued Dimensions and Bridge Tables 
+In a classic dimensional schema, each dimension attached to a fact table has a single value consistent with the fact table's grain. But there are a number of situations in which a dimension is legitimately multivalued. 
+* Chapter 8 (pg. 245), Chapter 9 (pg. 275), Chapter 10 (pg. 287), Chapter 13 (pg. 333), Chapter 14 (pg. 345), Chapter 16 (pg. 382), Chapter 19 (pg. 477)
+
+#### Time Varying Multivalued Bridge Tables 
+A _multivalued bridge table_ may need to be based on a type 2 slowly changing dimension. 
+* Chapter 7 (pg. 220), Chapter 10 (pg. 286)
+
+#### Behavior Tag Time Series and Behavior Study Groups 
+Almost all text in a data warehouse is descriptive text in dimension tables. Data mining customer cluster analyses typically results in textual  _behavior tags_, often identified on a periodic basis. Behavior tags are modeled in a positional design because the behavior tags are the target of complex simultaneous queries rather than numeric computations.
+
+Complex customer behavior can sometimes be discovered only by running lengthy iterative analyses. The results of complex behavior analyses can be captured in a simple table called a _study group_, consisting only of customers' durable keys.  
+* Chapter 8 (pg. 240), Chapter 8 (pg. 249)
+
+#### Aggregated Facts as Dimension Attributes 
+Business users are often interested in constraining the customer dimension based on aggregated performance metrics, such as filtering on all customers who spent over a certain dollar amount. Selected _aggregated_ facts can be placed in a dimension as targets for constraining and as row labels for reporting. 
+* Chapter 8 (pg. 239)
+
+#### Dynamic Value Bands 
+A _Dynamic Value Band_ report is organized as a series of report row headers that define a progressive set of varying sized ranges of a target numeric fact. The value banding dimension approach is probably higher performing, especially in a columnar database, because the CASE statement approach involves an almost unconstrained relation scan of the fact table. 
+* Chapter 10 (pg. 291)
+
+#### Text Comments Dimension, Multiple Time Zones, Measure Type Dimensions, Step Dimensions, Hot Swappable Dimensions, Abstract Generic Dimensions, Audit Dimensions, Late Arriving Dimensions 
+Further detail on these topic can be found at the references listed below.  
+* Chapter 9 (pg. 278), Chapter 14 (pg. 350), Chapter 12 (pg. 323), Chapter 15 (pg. 361), Chapter 6 (pg. 169), Chapter 14 (pg. 349), Chapter 8 (pg. 251), Chapter 15 (pg. 366), Chapter 10 (pg. 296), Chapter 9 (pg. 270), Chapter 11 (pg. 310), Chapter 6 (pg. 192), Chapter 16 (pg. 383), Chapter 19 (pg. 460), Chapter 20 (pg. 511), Chapter 14 (pg. 351), Chapter 19 (pg. 478), Chapter 20 (pg. 523)
+
+### Specific Purpose Schemas 
+The following design patterns are needed for specific use cases 
+
+#### Supertype and Subtype Schemas for Heterogenous Product 
+For financial services attempts to build a single consolidated fact table with union of all possible facts linked to dimension tables with all possible attributes of their divergent products, will fail because there can be hundreds of incompatible facts and attributes. The solution is to build a single _Supertype Fact Table_ that has the intersection of the facts from all the account types and then systematically build separate fact tables for each of the subtypes. 
+* Chapter 10 (pg. 203), Chapter 14 (pg. 347), Chapter 16 (pg. 384)
+
+#### Real Time Fact Tables and Error Event Schemas 
+_Real-time fact tables_ need to be updated more frequently than the more traditional nightly batch process. A number of DW/BI process can be done both in a star schema environment as well as an OLAP cub environment to accommodate the need for quicker aggregated data. 
+
+Managing data quality in a data warehouse requires a comprehensive system of data quality screens or filters that test the data as it flows from the source systems to the BI platform. The schema consist of an error event fact table whose grain is the individual error event and an associated error event detail fact table who grain is each column in each table that participates in an error event. 
+* Chapter 8 (pg. 260), Chapter 19 (pg. 458), Chapter 20 (pg. 520)

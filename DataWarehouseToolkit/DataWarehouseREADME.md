@@ -4,6 +4,8 @@ The Data Warehouse Toolkit Third Edition: The Definitive Guide to Dimensional Mo
 ## Table of Contents 
 * Data Warehousing, Business Intelligence, and Dimensional Modeling Primer 
 * Kimball Dimensional Modeling 
+
+:grey_exclamation::grey_exclamation: Use cases 
 * Retail Sales 
 * Inventory 
 * Procurement 
@@ -18,6 +20,8 @@ The Data Warehouse Toolkit Third Edition: The Definitive Guide to Dimensional Mo
 * Healthcare 
 * Electronic Commerce 
 * Insurance 
+
+:grey_exclamation::grey_exclamation: Big Data Analysis and Concepts 
 * Kimball Life Cycle 
 * Dimensional Modeling Process and Task 
 * ETL Subsystems and Techniques 
