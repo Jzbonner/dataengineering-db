@@ -3,7 +3,7 @@ Brainstorm for Data Analysis and Business Intelligence Project which includes a 
 
 ## Embulk 
 A quick overview: 
-![Diagram 1]() 
+![Diagram 1](https://raw.githubusercontent.com/Jzbonner/DataEngineering/gh-pages/DataAnalysis%26BI/img-media/Embulk.png) 
 
 ## CouchBase 
 A quick overview: 
