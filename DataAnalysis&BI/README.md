@@ -7,14 +7,17 @@ A quick overview:
 
 ## CouchBase 
 A quick overview: 
-![Diagram 2]()
+![Diagram 2](https://raw.githubusercontent.com/Jzbonner/DataEngineering/gh-pages/DataAnalysis%26BI/img-media/Couchbase.png)
 
 ## Apache Cassandra 
 A quick overview: 
-![Diagram 3]() 
+![Diagram 3](https://raw.githubusercontent.com/Jzbonner/DataEngineering/gh-pages/DataAnalysis%26BI/img-media/cassandra.jpg) 
 
 
 ## Apache Spark 
+A quick overview: 
+![Diagram 4](https://raw.githubusercontent.com/Jzbonner/DataEngineering/gh-pages/DataAnalysis%26BI/img-media/Spark.png)
+
 A quick reference for Examples in Python: https://github.com/apache/spark/tree/master/examples/src/main/python
 
 ## Important Background References for Data Science, Data Engineering and Data Architecture
